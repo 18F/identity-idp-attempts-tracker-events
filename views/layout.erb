@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Identity idp attempts tracker events example</title>
+  <link rel="stylesheet" type="text/css" media="all" href="/vendor/uswds/css/uswds.css">
+  <link rel="stylesheet" type="text/css" media="all" href="/assets/css/sign-in.css">
+  <link rel="stylesheet" type="text/css" media="all" href="/assets/css/fake.css">
+  <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+  <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+</head>
+<body>
+<%== yield %>
+<script src="/vendor/uswds/js/uswds.js"></script>
+<script type="text/javascript">
+    const dataTable = new simpleDatatables.DataTable("#events-table", {
+        searchable: true,
+        fixedHeight: true,
+    })
+</script>
+</body>
+</html>
