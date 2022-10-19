@@ -3,7 +3,7 @@
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 source 'https://rubygems.org'
-
+ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 gem 'activesupport', '~> 5.2', '>= 5.2.4.3'
 gem 'aws-sdk-secretsmanager', '~> 1.21'
 gem 'dotenv'

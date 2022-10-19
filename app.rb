@@ -58,30 +58,37 @@ module LoginGov::IdpAttemptsTracker
       body = "timestamp=#{Time.now.iso8601}"
       resp = conn.post(config.attempts_api_path, body)
 
-      encrypted_data = Base64.strict_decode64(resp.body)
-      iv = Base64.strict_decode64(resp.headers['x-payload-iv'])
-      encrypted_key = Base64.strict_decode64(resp.headers['x-payload-key'])
+      if resp.status == 200
+        encrypted_data = Base64.strict_decode64(resp.body)
+        iv = Base64.strict_decode64(resp.headers['x-payload-iv'])
+        encrypted_key = Base64.strict_decode64(resp.headers['x-payload-key'])
 
-      private_key = OpenSSL::PKey::RSA.new(config.attempts_private_key)
-      key = private_key.private_decrypt(encrypted_key)
+        private_key = OpenSSL::PKey::RSA.new(config.attempts_private_key)
+        key = private_key.private_decrypt(encrypted_key)
 
-      decrypted = decrypt_attempts_response(
-        encrypted_data: encrypted_data, key: key, iv: iv,
-      )
+        decrypted = decrypt_attempts_response(
+          encrypted_data: encrypted_data, key: key, iv: iv,
+        )
 
-      events = JSON.parse(decrypted)
-      events && events.each do |_jti, jwes|
-        jwes.each do |_key_id, jwe|
-          begin
-            decrypted_events << JSON.parse(JWE.decrypt(jwe, config.attempts_private_key))
-          rescue
-            puts 'Failed to parse/decrypt event!'
+        events = JSON.parse(decrypted)
+        events && events.each do |_jti, jwes|
+          jwes.each do |_key_id, jwe|
+            begin
+              decrypted_events << JSON.parse(JWE.decrypt(jwe, config.attempts_private_key))
+            rescue
+              puts 'Failed to parse/decrypt event!'
+            end
           end
         end
+      else
+        response_status = resp.status
+        response_error = resp.body
       end
 
       erb :index, locals: {
         events: decrypted_events,
+        response_status: response_status,
+        response_error: response_error,
       }
     end
 

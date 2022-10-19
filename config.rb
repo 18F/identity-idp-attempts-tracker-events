@@ -56,7 +56,7 @@ module LoginGov
       #
       def default_config
         data = {
-          'irs_private_key_path' => ENV['irs_private_key_path'] || './config/irs_pk.key',
+          'irs_private_key_path' => ENV['irs_private_key_path'] || './config/demo_irs_pk.key',
           'attempts_api_path' => ENV['attempts_api_path'] || '/api/irs_attempts_api/security_events',
           'attempts_api_auth_tokens' => ENV['attempts_api_auth_tokens'] || 'test-token-1,test-token-2',
           'attempts_api_csp_id' => ENV['attempts_api_csp_id'] || 'Login.gov',
@@ -104,7 +104,7 @@ module LoginGov
       end
 
       def demo_private_key_path
-        File.dirname(__FILE__) + '/config/irs_pk.key'
+        File.dirname(__FILE__) + '/config/demo_irs_pk.key'
       end
     end
   end

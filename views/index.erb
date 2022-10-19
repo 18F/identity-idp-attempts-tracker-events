@@ -8,6 +8,15 @@
 </div>
 <div class="usa-overlay"></div>
 <header class="usa-header usa-header--extended" role="banner">
+  <% if response_status && response_error %>
+    <div class="clearfix">
+      <div class="col-12 sm-col-6 mx-auto">
+        <div class="h5 p1 bg-red white center">
+          <span class="bold caps">API failed! <%= response_status %> : <%= response_error %></span>
+        </div>
+      </div>
+    </div>
+  <% end %>
   <div class="usa-navbar">
     <div class="usa-logo" id="extended-logo">
       <em class="usa-logo__text"><a href="/" title="Home" aria-label="Home">Identity idp attempts tracker events example</a></em>

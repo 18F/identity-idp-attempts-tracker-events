@@ -1,0 +1,7 @@
+---
+applications:
+- name: identity-idp-attempts-tracker-events
+  random-route: true
+  buildpacks:
+    - ruby_buildpack
+  memory: 256M
