@@ -110,7 +110,7 @@ workflows:
             - build
           filters:
             branches:
-              only: olatif/circle-ci-config #test only
+              only: main
           matrix:
             parameters:
               space:
