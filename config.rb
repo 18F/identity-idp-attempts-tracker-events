@@ -34,7 +34,7 @@ module LoginGov
 
       # @return [OpenSSL::PKey::RSA]
       def attempts_private_key
-        @attempts_private_key ||= OpenSSL::PKey::RSA.new(get_sp_private_key_raw(@config.fetch('irs_private_key_path')))
+        @attempts_private_key ||= OpenSSL::PKey::RSA.new(@config.fetch('irs_private_key')) if @config.fetch('irs_private_key').present?
       end
 
       def attempts_api_csp_id
@@ -56,7 +56,7 @@ module LoginGov
       #
       def default_config
         data = {
-          'irs_private_key_path' => ENV['irs_private_key_path'] || './config/irs_pk.key',
+          'irs_private_key' => ENV['irs_private_key'],
           'attempts_api_path' => ENV['attempts_api_path'] || '/api/irs_attempts_api/security_events',
           'attempts_api_auth_tokens' => ENV['attempts_api_auth_tokens'] || 'test-token-1,test-token-2',
           'attempts_api_csp_id' => ENV['attempts_api_csp_id'] || 'Login.gov',
@@ -79,32 +79,6 @@ module LoginGov
         end
 
         data
-      end
-
-      private
-
-      def get_sp_private_key_raw(path)
-        if path.start_with?('aws-secretsmanager:')
-          secret_id = path.split(':', 2).fetch(1)
-          opts = {}
-          smc = Aws::SecretsManager::Client.new(opts)
-          begin
-            return smc.get_secret_value(secret_id: secret_id).secret_string
-          rescue Aws::SecretsManager::Errors::ResourceNotFoundException
-            if ENV['deployed']
-              raise
-            end
-          end
-
-          STDERR.puts "#{secret_id.inspect}: not found in AWS Secrets Manager, using demo key"
-          get_sp_private_key_raw(demo_private_key_path)
-        else
-          File.read(path)
-        end
-      end
-
-      def demo_private_key_path
-        File.dirname(__FILE__) + '/config/irs_pk.key'
       end
     end
   end

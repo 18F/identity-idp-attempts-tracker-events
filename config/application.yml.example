@@ -1,6 +1,6 @@
 ---
 idp_url: 'http://localhost:3000'
-irs_private_key_path: 'config/irs_pk.key'
+irs_private_key: ''
 attempts_api_path: '/api/irs_attempts_api/security_events'
 attempts_api_auth_tokens: 'test-token-1,test-token-2'
 attempts_api_csp_id: 'Login.gov'
