@@ -34,7 +34,10 @@ module LoginGov
 
       # @return [OpenSSL::PKey::RSA]
       def attempts_private_key
-        @attempts_private_key ||= OpenSSL::PKey::RSA.new(@config.fetch('irs_private_key')) if @config.fetch('irs_private_key').present?
+        irs_private_key = @config.fetch('irs_private_key')
+        return nil unless irs_private_key.present?
+        irs_private_key = irs_private_key.gsub('\n', "\n")
+        @attempts_private_key ||= OpenSSL::PKey::RSA.new(irs_private_key)
       end
 
       def attempts_api_csp_id

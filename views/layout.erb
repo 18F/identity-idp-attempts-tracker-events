@@ -19,6 +19,13 @@
         searchable: true,
         fixedHeight: true,
     })
+
+    document.getElementById('download-csv').onclick = function (){
+        dataTable.export({
+            type: "csv",
+            filename: "events",
+        });
+    }
 </script>
 </body>
 </html>
