@@ -74,7 +74,7 @@ module LoginGov::IdpAttemptsTracker
           events && events.each do |_jti, jwes|
             jwes.each do |_key_id, jwe|
               begin
-                decrypted_events << JSON.parse(JWE.decrypt(jwe, key))
+                decrypted_events << JSON.parse(JWE.decrypt(jwe, private_key))
               rescue
                 puts 'Failed to parse/decrypt event!'
               end
