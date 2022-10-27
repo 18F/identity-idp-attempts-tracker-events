@@ -12,7 +12,7 @@
     <div class="clearfix">
       <div class="col-12 sm-col-6 mx-auto">
         <div class="h5 p1 bg-red white center">
-          <span class="bold caps">API failed! <%= response_status %> : <%= response_error %></span>
+          <span class="bold caps">Failed! <%= response_status %> : <%= response_error %></span>
         </div>
       </div>
     </div>
@@ -27,12 +27,13 @@
   <section class="grid-container usa-section">
     <div class="grid-row grid-gap">
       <div class="tablet:grid-col-12">
+        <a id="download-csv" class="usa-button" href="#">Download CSV</a>
         <table id="events-table">
           <thead>
           <tr>
             <th>#</th>
-            <th>Name</th>
-            <th>Date</th>
+            <th>Event Name</th>
+            <th>Datetime</th>
             <th>Success</th>
             <th>Failure Reason</th>
             <th>Data</th>
@@ -46,7 +47,7 @@
                 <td title="<%= JSON.pretty_generate(event) %>"> <%= event["events"].keys.first.split('/').last %> </td>
                 <td> <%= Time.at(event['iat']).to_datetime&.strftime('%m-%d-%Y: %H:%M %Z') %> </td>
                 <td> <%= keys["success"] %> </td>
-                <td> <%= keys["failure_reason"] %> </td>
+                <td> <textarea><%= keys["failure_reason"] %> </textarea></td>
                 <td>
                   <textarea><%= JSON.pretty_generate(event) %></textarea>
                 </td>
