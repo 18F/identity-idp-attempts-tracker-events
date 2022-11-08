@@ -16,6 +16,7 @@ require 'time'
 require 'logger'
 
 require_relative './config'
+require_relative './lib/base16'
 
 module LoginGov::IdpAttemptsTracker
   class AppError < StandardError; end
@@ -60,24 +61,21 @@ module LoginGov::IdpAttemptsTracker
       resp = conn.post(config.attempts_api_path, body)
 
       if resp.status == 200
-        encrypted_data = Base64.strict_decode64(resp.body)
         iv = Base64.strict_decode64(resp.headers['x-payload-iv'])
         encrypted_key = Base64.strict_decode64(resp.headers['x-payload-key'])
         begin
           private_key = config.attempts_private_key
           key = private_key.private_decrypt(encrypted_key)
           decrypted = decrypt_attempts_response(
-            encrypted_data: encrypted_data, key: key, iv: iv,
+            encrypted_data: resp.body, key: key, iv: iv,
           )
 
-          events = JSON.parse(decrypted)
-          events && events.each do |_jti, jwes|
-            jwes.each do |_key_id, jwe|
-              begin
-                decrypted_events << JSON.parse(JWE.decrypt(jwe, private_key))
-              rescue
-                puts 'Failed to parse/decrypt event!'
-              end
+          events = decrypted.split("\r\n")
+          events && events.each do |jwe|
+            begin
+              decrypted_events << JSON.parse(JWE.decrypt(jwe, private_key))
+            rescue
+              puts 'Failed to parse/decrypt event!'
             end
           end
         rescue StandardError => err
@@ -90,7 +88,7 @@ module LoginGov::IdpAttemptsTracker
       end
 
       erb :index, locals: {
-        events: decrypted_events,
+        events: decrypted_events&.sort_by { |e| e["iat"] },
         response_status: response_status,
         response_error: response_error,
       }
@@ -99,11 +97,11 @@ module LoginGov::IdpAttemptsTracker
     private
 
     def decrypt_attempts_response(encrypted_data:, key:, iv:)
-      cipher = OpenSSL::Cipher.new('aes-128-cbc')
+      cipher = OpenSSL::Cipher.new('aes-256-cbc')
       cipher.decrypt
       cipher.key = key
       cipher.iv = iv
-      decrypted = cipher.update(encrypted_data) + cipher.final
+      decrypted = cipher.update(Base16.decode16(encrypted_data)) + cipher.final
 
       Zlib.gunzip(decrypted)
     end
