@@ -88,7 +88,7 @@ module LoginGov::IdpAttemptsTracker
       end
 
       erb :index, locals: {
-        events: decrypted_events&.sort_by { |e| e["iat"] },
+        events: decrypted_events&.sort_by { |e| -e["iat"] },
         response_status: response_status,
         response_error: response_error,
       }
