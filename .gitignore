@@ -13,3 +13,4 @@ public/vendor
 node_modules
 .idea
 .bundle
+.git/
