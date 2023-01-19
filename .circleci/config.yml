@@ -93,12 +93,12 @@ jobs:
       - run:
           name: login to cloud.gov
           command: |
-            cf login -a https://api.fr.cloud.gov -u "e83a4fcd-8c21-43aa-9b23-e948332f08da" -p $CF_PASS -o "sandbox-gsa" -s "<< parameters.space >>-identity-idp-attempts-tracker-events"
+            cf login -a https://api.fr.cloud.gov -u "c745d915-30c0-48d7-95b3-ed2285d3b068" -p $CF_PASS -o "gsa-login-prototyping" -s "<< parameters.space >>"
 
       - run:
           name: deploy to cloud.gov
           command: |
-            cf push identity-idp-attempts-tracker-events
+            cf push dev-identity-idp-attempts-tracker-events
 
 workflows:
   version: 2
