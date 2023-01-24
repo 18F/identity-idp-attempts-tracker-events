@@ -58,7 +58,7 @@ module LoginGov::IdpAttemptsTracker
         headers: { 'Authorization' => "Bearer #{config.attempts_api_csp_id} #{irs_attempt_api_auth_token}" }
       )
       @today = Time.now.to_s.slice(0, 16)
-      body = "timestamp=#{Time.parse(params[:timestamp]).utc.iso8601 rescue (ActiveSupport::TimeZone['UTC'].now).iso8601}"
+      body = "timestamp=#{parsed_timestamp(params[:timestamp])}"
       resp = conn.post(config.attempts_api_path, body)
 
       if resp.status == 200
@@ -109,6 +109,12 @@ module LoginGov::IdpAttemptsTracker
 
     def json(response)
       JSON.parse(response.to_s).with_indifferent_access
+    end
+
+    def parsed_timestamp(timestamp)
+      Time.parse(timestamp).utc.iso8601
+    rescue
+      ActiveSupport::TimeZone['UTC'].now.iso8601
     end
   end
 end
