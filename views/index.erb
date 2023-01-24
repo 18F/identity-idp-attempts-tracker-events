@@ -27,7 +27,11 @@
   <section class="grid-container usa-section">
     <div class="grid-row grid-gap">
       <div class="tablet:grid-col-12">
-        <a id="download-csv" class="usa-button" href="#">Download CSV</a>
+        <a id="download-csv" class="usa-button float-right margin-top-6" href="#">Download CSV</a>
+        <form id="timestamp_form" name="timestamp_form" method="get">
+          <label class="usa-label" for="timestamp">Select Timestamp</label>
+          <input type="datetime-local" class="usa-input" name="timestamp" id="timestamp" max="<%= @today %>" onchange="this.form.submit()" value="<%= params[:timestamp] || @today %>"/>
+        </form>
         <table id="events-table">
           <thead>
           <tr>
