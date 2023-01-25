@@ -114,7 +114,7 @@ module LoginGov::IdpAttemptsTracker
     def parsed_timestamp(timestamp)
       Time.parse(timestamp).utc.iso8601
     rescue
-      ActiveSupport::TimeZone['UTC'].now.iso8601
+      (ActiveSupport::TimeZone['UTC'].now - 1.hours).iso8601
     end
   end
 end
