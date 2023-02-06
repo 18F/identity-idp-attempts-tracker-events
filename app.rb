@@ -57,7 +57,7 @@ module LoginGov::IdpAttemptsTracker
         url: config.idp_url,
         headers: { 'Authorization' => "Bearer #{config.attempts_api_csp_id} #{irs_attempt_api_auth_token}" }
       )
-      @today = Time.now.to_s.slice(0, 16)
+      @today = ActiveSupport::TimeZone['UTC'].now
       body = "timestamp=#{parsed_timestamp(params[:timestamp])}"
       resp = conn.post(config.attempts_api_path, body)
 
@@ -114,7 +114,7 @@ module LoginGov::IdpAttemptsTracker
     def parsed_timestamp(timestamp)
       Time.parse(timestamp).utc.iso8601
     rescue
-      (ActiveSupport::TimeZone['UTC'].now - 1.hours).iso8601
+      @today.iso8601
     end
   end
 end
