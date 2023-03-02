@@ -50,12 +50,28 @@
               <% keys = event["events"].values.first %>
               <tr>
                 <td> <%= index + 1 %> </td>
-                <td title="<%= JSON.pretty_generate(event) %>"> <%= event["events"].keys.first.split('/').last %> </td>
+                <td> <%= event["events"].keys.first.split('/').last %> </td>
                 <td> <%= Time.at(event['iat']).to_datetime&.strftime('%m-%d-%Y: %H:%M %Z') %> </td>
                 <td> <%= keys["success"] %> </td>
-                <td> <textarea><%= keys["failure_reason"] %> </textarea></td>
                 <td>
-                  <textarea><%= JSON.pretty_generate(event) %></textarea>
+                  <% if keys["failure_reason"] %>
+                    <div class="resizeable_div">
+                      <code>
+                        <pre>
+                          <%= JSON.pretty_generate(keys["failure_reason"]) %>
+                        </pre>
+                      </code>
+                    </div>
+                  <% end %>
+                </td>
+                <td>
+                  <div class="resizeable_div">
+                    <code>
+                      <pre>
+                        <%= JSON.pretty_generate(event) %>
+                      </pre>
+                    </code>
+                  </div>
                 </td>
               </tr>
             <% end %>

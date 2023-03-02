@@ -85,6 +85,10 @@ td, th {
     padding: 8px;
 }
 
-tr:nth-child(even) {
-    background-color: #dddddd;
+.resizeable_div{
+    resize: both;
+    overflow: auto;
+    padding: 5px;
+    height: 100px;
+    width: 300px
 }
